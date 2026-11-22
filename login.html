@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id" class="lite">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#02040f" />
+  <title>Login — CEK REKENING</title>
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preload" as="image" href="/assets/mg-neon-sm.webp?v=5" imagesrcset="/assets/mg-neon-sm.webp?v=5 720w, /assets/mg-neon.webp?v=4 1400w" imagesizes="(max-width: 700px) 100vw, 900px" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
+  <script>
+    /* Pilih mode SEBELUM cat pertama: "lite" (ringan) untuk perangkat lemah, "full" untuk perangkat kuat.
+       Bisa dipaksa: ?fx=lite / ?fx=full, atau tombol kecil di pojok kiri bawah. */
+    (function () {
+      var d = document.documentElement, pick = null, auto = null;
+      try {
+        var q = location.search.match(/[?&]fx=(lite|full)/);
+        if (q) localStorage.setItem('mg_fx', q[1]);
+        pick = localStorage.getItem('mg_fx'); auto = localStorage.getItem('mg_fx_auto');
+      } catch (e) {}
+      var n = navigator, mem = n.deviceMemory || 8, cores = n.hardwareConcurrency || 4;
+      var saver = n.connection && n.connection.saveData;
+      var rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var weak = rm || saver || mem <= 4 || cores <= 4 || auto === 'lite';
+      d.className = (pick ? pick === 'lite' : weak) ? 'lite' : 'full';
+      d.setAttribute('data-pick', pick || '');
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #02040f; --cyan: #22e4ff; --cyan-soft: #9ff3ff; --blue: #3b6bff; --violet: #7c5cff;
+      --danger: #ff5d7a; --ok: #3dffb5; --text: #e6f1ff; --muted: #8fa6d1;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: radial-gradient(120% 90% at 50% 40%, #07123a 0%, #030820 45%, var(--bg) 100%);
+      overflow: hidden; display: grid; place-items: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    }
+    body.paused *, body.paused *::before, body.paused *::after { animation-play-state: paused !important; }
+
+    /* ---------- LATAR (statis & ringan) ---------- */
+    .stage { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .glow { position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 50% 46%, rgba(34,228,255,.16) 0%, rgba(59,107,255,.10) 28%, transparent 58%),
+        radial-gradient(circle at 20% 80%, rgba(124,92,255,.10), transparent 40%); }
+    .grid-floor { position: absolute; left: -50%; right: -50%; bottom: -8%; height: 56%; overflow: hidden;
+      transform-origin: 50% 100%; transform: rotateX(68deg); opacity: .45;
+      -webkit-mask-image: linear-gradient(to top, #000 5%, transparent 85%); mask-image: linear-gradient(to top, #000 5%, transparent 85%); }
+    .grid-inner { position: absolute; left: 0; right: 0; top: -64px; bottom: 0;
+      background-image: linear-gradient(rgba(34,228,255,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(34,228,255,.35) 1px, transparent 1px);
+      background-size: 64px 64px; }
+    .logo-wrap { position: absolute; left: 50%; top: 47%; width: min(120vw, 118vh, 980px);
+      transform: translate(-50%, -50%); will-change: transform; }
+    .logo { display: block; width: 100%; height: auto; opacity: .95; animation: logoIn .9s ease-out backwards; }
+    @keyframes logoIn { from { opacity: 0; scale: .92; } }
+    #fx { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+    .ring { display: none; }
+    .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(0,0,6,.75) 100%); }
+
+    /* ---------- KARTU LOGIN ---------- */
+    .card-wrap { position: relative; z-index: 2; width: min(420px, 100%); animation: cardIn .6s .15s ease-out backwards; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(24px); } }
+    .card { position: relative; padding: 34px 28px 26px; border-radius: 22px;
+      background: rgba(5,12,38,.84);
+      border: 1.5px solid rgba(34,228,255,.35);
+      box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 40px rgba(34,228,255,.14); }
+    .card-wrap.shake { animation: shake .5s cubic-bezier(.36,.07,.19,.97); }
+    .card-wrap.shake .card { border-color: var(--danger); box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 30px rgba(255,93,122,.4); }
+    @keyframes shake { 10%,90% { transform: translateX(-2px); } 20%,80% { transform: translateX(4px); } 30%,50%,70% { transform: translateX(-8px); } 40%,60% { transform: translateX(8px); } }
+
+    .badge { display: inline-flex; align-items: center; gap: 8px; font-size: .66rem; font-weight: 600; letter-spacing: 2.2px; color: var(--cyan-soft);
+      padding: 6px 12px; border-radius: 999px; background: rgba(34,228,255,.08); border: 1px solid rgba(34,228,255,.28); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+    .dot.warn { background: #ffb347; box-shadow: 0 0 8px #ffb347; }
+    h1 { margin: 18px 0 4px; font-weight: 800; font-size: clamp(1.6rem, 6.4vw, 2.05rem); letter-spacing: 3px; text-transform: uppercase; line-height: 1.1;
+      color: #eaf6ff; text-shadow: 0 0 8px var(--cyan), 0 0 20px rgba(34,228,255,.45); }
+    .sub { margin: 0 0 24px; font-size: .82rem; color: var(--muted); letter-spacing: .4px; }
+    .sub b { color: var(--cyan-soft); font-weight: 600; }
+
+    .field { position: relative; margin-bottom: 14px; }
+    .field input { width: 100%; height: 56px; padding: 22px 50px 6px 16px; font: 400 1rem 'Poppins', sans-serif; letter-spacing: .5px; color: #fff;
+      background: rgba(3,10,36,.7); border: 1.5px solid rgba(120,160,255,.25); border-radius: 14px; outline: none; transition: border-color .2s, box-shadow .2s; }
+    .field label { position: absolute; left: 16px; top: 17px; font-size: .92rem; color: var(--muted); pointer-events: none; transform-origin: 0 0; transition: transform .2s ease, color .2s ease; }
+    .field input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,228,255,.14); }
+    .field input:focus + label, .field input:not(:placeholder-shown) + label { transform: translateY(-11px) scale(.76); color: var(--cyan-soft); }
+    .eye { position: absolute; right: 6px; top: 6px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: var(--muted); border-radius: 10px; cursor: pointer; }
+    .eye:hover, .eye:focus-visible { color: var(--cyan); background: rgba(34,228,255,.1); outline: none; }
+    .eye svg { width: 22px; height: 22px; }
+    .eye .off { display: none; } .eye.on .off { display: block; } .eye.on .on { display: none; }
+
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 2px 0 18px; font-size: .78rem; color: var(--muted); }
+    .check { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; }
+    .check input { position: absolute; opacity: 0; pointer-events: none; }
+    .box { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid rgba(120,160,255,.45); display: grid; place-items: center; }
+    .box::after { content: ""; width: 9px; height: 5px; border-left: 2px solid #021; border-bottom: 2px solid #021; transform: rotate(-45deg) scale(0); margin-top: -2px; transition: transform .15s; }
+    .check input:checked + .box { background: var(--cyan); border-color: var(--cyan); }
+    .check input:checked + .box::after { transform: rotate(-45deg) scale(1); }
+    .check input:focus-visible + .box { outline: 2px solid var(--cyan-soft); outline-offset: 2px; }
+    #caps { color: #ffb347; opacity: 0; font-weight: 600; }
+    #caps.show { opacity: 1; }
+
+    .btn { position: relative; width: 100%; height: 54px; border: 0; border-radius: 14px; cursor: pointer; overflow: hidden;
+      font: 800 .95rem 'Poppins', sans-serif; letter-spacing: 3px; color: #021226;
+      background: linear-gradient(110deg, var(--cyan), #5ab0ff 55%, var(--violet));
+      box-shadow: 0 6px 22px rgba(34,228,255,.3); transition: transform .12s ease, filter .15s; }
+    .btn:active:not(:disabled) { transform: scale(.985); }
+    .btn:disabled { cursor: not-allowed; filter: grayscale(.5) brightness(.8); }
+    .btn .label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 10px; }
+    .spin { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid rgba(2,18,38,.3); border-top-color: #021226; animation: spin .7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn.loading .spin { display: block; }
+
+    .msg { min-height: 22px; margin-top: 14px; text-align: center; font-size: .82rem; font-weight: 600; color: var(--muted); }
+    .msg.err { color: var(--danger); } .msg.ok { color: var(--ok); } .msg.warn { color: #ffb347; }
+
+    /* tombol mode */
+    .fxbtn { position: fixed; left: max(10px, env(safe-area-inset-left)); bottom: max(10px, env(safe-area-inset-bottom)); z-index: 5;
+      font: 600 .64rem 'Poppins', sans-serif; letter-spacing: 1.2px; color: var(--muted); background: rgba(5,12,38,.7);
+      border: 1px solid rgba(120,160,255,.25); border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+    .fxbtn:hover, .fxbtn:focus-visible { color: var(--cyan); border-color: var(--cyan); outline: none; }
+
+    /* sukses */
+    .flash { position: fixed; inset: 0; z-index: 20; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 47%, #fff 0%, rgba(34,228,255,.7) 20%, transparent 65%); }
+    body.success .flash { animation: flash .8s ease-out forwards; }
+    body.success .card-wrap { animation: cardOut .5s ease-in forwards; }
+    @keyframes flash { 0% { opacity: 0; } 35% { opacity: .9; } 100% { opacity: 0; } }
+    @keyframes cardOut { to { opacity: 0; transform: translateY(-16px) scale(.96); } }
+
+    #siteClosed { display: none; position: fixed; inset: 0; z-index: 99; align-items: center; justify-content: center; text-align: center; padding: 20px;
+      background: #02040f; white-space: pre-line; overflow-wrap: anywhere; font-weight: 800; font-size: clamp(1.6rem, 5vw, 3rem); color: var(--text); text-shadow: 0 0 8px var(--cyan); }
+    #siteClosed.show { display: flex; }
+
+    /* HP / portrait */
+    @media (max-aspect-ratio: 1/1) {
+      body { place-items: end center; padding-bottom: max(5vh, env(safe-area-inset-bottom)); }
+      .logo-wrap { top: 24%; width: min(104vw, 60vh); }
+    }
+    @media (max-width: 480px) { .card { padding: 28px 20px 22px; } .grid-floor { display: none; } }
+
+    /* ================= MODE FULL (perangkat kuat) ================= */
+    .full .grid-inner { animation: gridMove 2.4s linear infinite; }
+    @keyframes gridMove { to { transform: translateY(64px); } }
+    .full #fx { display: block; }
+    .full .logo { animation: logoIn .9s ease-out backwards, flicker 9s steps(1) 1.2s infinite; }
+    @keyframes flicker { 0%, 6%, 8%, 40%, 42%, 70%, 100% { opacity: .95; } 7% { opacity: .6; } 41% { opacity: .66; } 41.5% { opacity: 1; } 71% { opacity: .75; } 71.6% { opacity: 1; } }
+    .full .ring { display: block; position: absolute; left: 50%; top: 47%; width: 40vmin; height: 40vmin; border: 1.5px solid rgba(34,228,255,.45); border-radius: 50%;
+      opacity: 0; transform: translate(-50%, -50%) scale(.3); animation: ring 6s ease-out infinite; }
+    .full .ring + .ring { animation-delay: 3s; border-color: rgba(124,92,255,.45); }
+    @keyframes ring { 0% { opacity: .8; transform: translate(-50%,-50%) scale(.3); } 100% { opacity: 0; transform: translate(-50%,-50%) scale(2.4); } }
+    @media (max-aspect-ratio: 1/1) { .full .ring { top: 24%; } }
+    .full .dot { animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(1.5); opacity: .6; } }
+    /* border neon berputar (hanya transform = ringan di GPU) */
+    .full .card-wrap { padding: 1.5px; border-radius: 23.5px; overflow: hidden; isolation: isolate; }
+    .full .card-wrap::before { content: ""; position: absolute; left: 50%; top: 50%; width: 170%; aspect-ratio: 1; z-index: -1;
+      background: conic-gradient(from 0deg, transparent 0 55%, var(--cyan) 72%, var(--blue) 86%, transparent 100%);
+      transform: translate(-50%, -50%) rotate(0deg); animation: borderSpin 4.5s linear infinite; }
+    @keyframes borderSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .full .card { background: #050c26; border-color: transparent; box-shadow: none; border-radius: 22px; }
+    .full .card-wrap.shake::before { background: conic-gradient(var(--danger), #ff9a5d, var(--danger)); }
+    .full .card-wrap.shake .card { box-shadow: none; }
+    .full .btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.6) 50%, transparent 70%); transform: translateX(-120%); animation: shine 3.4s ease-in-out infinite; }
+    @keyframes shine { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+    .full h1 span { display: inline-block; opacity: 0; transform: translateY(12px); animation: letterIn .45s ease-out forwards; }
+    @keyframes letterIn { to { opacity: 1; transform: none; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .full h1 span { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" aria-hidden="true">
+    <div class="glow"></div>
+    <div class="grid-floor"><div class="grid-inner"></div></div>
+    <canvas id="fx"></canvas>
+    <div class="ring"></div><div class="ring"></div>
+    <div class="logo-wrap" id="logoWrap">
+      <img class="logo" src="/assets/mg-neon-sm.webp?v=5" srcset="/assets/mg-neon-sm.webp?v=5 720w, /assets/mg-neon.webp?v=4 1400w" sizes="(max-width: 700px) 100vw, 900px" alt="" draggable="false" decoding="async" fetchpriority="high" />
+    </div>
+    <div class="vignette"></div>
+  </div>
+  <div class="flash"></div>
+
+  <main class="card-wrap" id="cardWrap">
+    <section class="card" id="card">
+      <span class="badge"><i class="dot" id="statusDot"></i><span id="statusText">MEGA GROUP · SECURE ACCESS</span></span>
+      <h1 id="title">CEK REKENING</h1>
+      <p class="sub">Masukkan password untuk <b>melanjutkan</b>.</p>
+
+      <form id="form" autocomplete="on" novalidate>
+        <input type="text" name="username" value="admin" autocomplete="username" hidden tabindex="-1" aria-hidden="true" />
+        <div class="field">
+          <input id="pw" name="password" type="password" placeholder=" " autocomplete="current-password" autocapitalize="off" spellcheck="false" maxlength="128" required />
+          <label for="pw">Password</label>
+          <button type="button" class="eye" id="eye" aria-label="Tampilkan password">
+            <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12A3 3 0 1 1 9.88 9.88"/><path d="M1 1l22 22"/></svg>
+          </button>
+        </div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="remember" checked /><span class="box"></span>Ingat saya 30 hari</label>
+          <span id="caps">⇪ CAPS LOCK</span>
+        </div>
+        <button class="btn" id="btn" type="submit"><span class="label"><span class="spin"></span><span id="btnText">MASUK</span></span></button>
+        <div class="msg" id="msg" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <button type="button" class="fxbtn" id="fxBtn" aria-live="polite">MODE RINGAN</button>
+  <div id="siteClosed">This Site Has Been Closed Thanks</div>
+
+  <script>
+  (function () {
+    'use strict';
+    var $ = function (id) { return document.getElementById(id); };
+    var root = document.documentElement;
+    var card = $('card'), cardWrap = $('cardWrap'), form = $('form'), pw = $('pw'), btn = $('btn'), btnText = $('btnText'), msg = $('msg');
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isLite = function () { return root.classList.contains('lite'); };
+    var ls = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+               set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+    /* ---------- Judul: huruf bergantian (hanya mode full) ---------- */
+    var title = $('title'), titleText = title.textContent, titleSplit = false;
+    function splitTitle(on) {
+      if (on && !titleSplit) {
+        title.setAttribute('aria-label', titleText); title.textContent = '';
+        for (var i = 0; i < titleText.length; i++) {
+          var s = document.createElement('span'), ch = titleText[i];
+          s.textContent = ch === ' ' ? '\u00A0' : ch; s.setAttribute('aria-hidden', 'true'); s.style.animationDelay = (0.3 + i * 0.04) + 's'; title.appendChild(s);
+        }
+        titleSplit = true;
+      } else if (!on && titleSplit) { title.textContent = titleText; title.removeAttribute('aria-label'); titleSplit = false; }
+    }
+
+    /* ---------- Partikel ringan (mode full): tanpa garis, tanpa shadowBlur, 30 fps ---------- */
+    var cv = $('fx'), ctx = cv.getContext('2d'), P = [], W = 0, H = 0, fxOn = false, lastT = 0, raf = 0;
+    var COLORS = ['34,228,255', '90,160,255', '124,92,255', '180,250,255'];
+    function sizeFx() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5); W = innerWidth; H = innerHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.min(45, Math.floor((W * H) / 26000)); P = [];
+      for (var i = 0; i < n; i++) P.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.6 + 0.6,
+        vy: -(Math.random() * 0.35 + 0.08), vx: (Math.random() - 0.5) * 0.18, c: COLORS[(Math.random() * 4) | 0], a: Math.random() * 0.5 + 0.3 });
+    }
+    function drawFx(t) {
+      raf = requestAnimationFrame(drawFx);
+      if (t - lastT < 33) return; lastT = t;
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < P.length; i++) {
+        var p = P[i]; p.x += p.vx; p.y += p.vy;
+        if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
+        if (p.x < -6) p.x = W + 6; else if (p.x > W + 6) p.x = -6;
+        ctx.fillStyle = 'rgba(' + p.c + ',' + p.a + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      }
+    }
+    function startFx() { if (fxOn || reduce) return; fxOn = true; sizeFx(); raf = requestAnimationFrame(drawFx); }
+    function stopFx() { fxOn = false; cancelAnimationFrame(raf); ctx.clearRect(0, 0, W, H); }
+    var rz; addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { if (fxOn) sizeFx(); }, 200); });
+
+    /* ---------- Parallax logo (mode full, mouse): hanya saat bergerak ---------- */
+    var logo = $('logoWrap'), tx = 0, ty = 0, cx = 0, cy = 0, pr = 0, fine = matchMedia('(pointer: fine)').matches;
+    function par() {
+      cx += (tx - cx) * 0.12; cy += (ty - cy) * 0.12;
+      logo.style.transform = 'translate(-50%,-50%) translate3d(' + (cx * -18).toFixed(1) + 'px,' + (cy * -12).toFixed(1) + 'px,0)';
+      pr = (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002) ? requestAnimationFrame(par) : 0;
+    }
+    function onMove(e) { tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1; if (!pr) pr = requestAnimationFrame(par); }
+    function setParallax(on) { removeEventListener('pointermove', onMove); if (on && fine) addEventListener('pointermove', onMove, { passive: true }); if (!on) { logo.style.transform = ''; } }
+
+    /* ---------- Terapkan mode ---------- */
+    var fxBtn = $('fxBtn');
+    function label() { fxBtn.textContent = isLite() ? 'MODE RINGAN · NYALAKAN EFEK' : 'MODE PENUH · RINGANKAN'; }
+    function apply(lite) {
+      root.classList.toggle('lite', lite); root.classList.toggle('full', !lite);
+      if (lite) { stopFx(); setParallax(false); splitTitle(false); }
+      else { splitTitle(true); startFx(); setParallax(true); }
+      label();
+    }
+    fxBtn.addEventListener('click', function () { var next = !isLite(); ls.set('mg_fx', next ? 'lite' : 'full'); ls.set('mg_fx_auto', ''); apply(next); });
+    apply(isLite());
+
+    /* Uji kelancaran otomatis: jika FPS rendah di mode full -> otomatis pindah ke ringan */
+    if (!isLite() && !ls.get('mg_fx')) {
+      setTimeout(function () {
+        if (isLite()) return;
+        var frames = 0, slow = 0, t0 = performance.now(), last = t0;
+        function probe(now) {
+          if (isLite() || document.hidden) return;
+          if (now - last > 40) slow++;
+          last = now; frames++;
+          if (frames < 60) { requestAnimationFrame(probe); return; }
+          var fps = frames / ((now - t0) / 1000);
+          if (fps < 38 || slow > 20) { ls.set('mg_fx_auto', 'lite'); apply(true); }
+        }
+        requestAnimationFrame(probe);
+      }, 1500);
+    }
+
+    /* Jeda animasi saat tab tidak terlihat */
+    document.addEventListener('visibilitychange', function () {
+      document.body.classList.toggle('paused', document.hidden);
+      if (document.hidden) stopFx(); else if (!isLite()) startFx();
+    });
+
+    /* ---------- Tampilkan / sembunyikan password, CapsLock ---------- */
+    $('eye').addEventListener('click', function () {
+      var show = pw.type === 'password'; pw.type = show ? 'text' : 'password';
+      this.classList.toggle('on', show); this.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password'); pw.focus();
+    });
+    var caps = function (e) { if (e.getModifierState) $('caps').classList.toggle('show', e.getModifierState('CapsLock')); };
+    pw.addEventListener('keydown', caps); pw.addEventListener('keyup', caps); pw.addEventListener('blur', function () { $('caps').classList.remove('show'); });
+
+    /* ---------- Pesan & kunci sementara ---------- */
+    function say(text, type) { msg.className = 'msg ' + (type || ''); msg.textContent = text; }
+    var lockTimer = null;
+    function lock(seconds) {
+      clearInterval(lockTimer); var left = seconds; btn.disabled = true; pw.disabled = true;
+      var tick = function () {
+        if (left <= 0) { clearInterval(lockTimer); btn.disabled = false; pw.disabled = false; btnText.textContent = 'MASUK'; say('', ''); pw.focus(); return; }
+        var m = Math.floor(left / 60), s = String(left % 60); if (s.length < 2) s = '0' + s;
+        btnText.textContent = 'TUNGGU ' + m + ':' + s; say('Terlalu banyak percobaan. Coba lagi setelah hitung mundur selesai.', 'warn'); left--;
+      };
+      tick(); lockTimer = setInterval(tick, 1000);
+    }
+    function fail(text) {
+      say(text, 'err'); cardWrap.classList.remove('shake'); void cardWrap.offsetWidth; cardWrap.classList.add('shake');
+      if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+    }
+
+    /* ---------- Status awal ---------- */
+    (async function () {
+      try {
+        var r = await Promise.all([
+          fetch('/api/login', { cache: 'no-store' }).then(function (x) { return x.json(); }).catch(function () { return null; }),
+          fetch('/api/site-status', { cache: 'no-store' }).then(function (x) { return x.json(); }).catch(function () { return null; })
+        ]);
+        var a = r[0], s = r[1];
+        if (s && s.closed) { if (s.closeMsg && s.closeMsg.trim()) $('siteClosed').textContent = s.closeMsg; $('siteClosed').classList.add('show'); document.title = 'Site Closed'; stopFx(); return; }
+        if (a) {
+          if (a.authenticated) { location.replace('/'); return; }
+          if (!a.storage) { $('statusDot').classList.add('warn'); $('statusText').textContent = 'STORAGE BELUM AKTIF'; say('Storage server belum dikonfigurasi.', 'warn'); }
+          else if (!a.passwordSet) { $('statusDot').classList.add('warn'); $('statusText').textContent = 'PASSWORD BELUM DIATUR'; say('Atur password lewat bot Telegram: /setpass PASSWORD', 'warn'); }
+        }
+      } catch (e) { /* abaikan */ }
+      setTimeout(function () { pw.focus({ preventScroll: true }); }, 600);
+    })();
+
+    /* ---------- Submit ---------- */
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var value = pw.value;
+      if (!value) { fail('Masukkan password.'); pw.focus(); return; }
+      btn.disabled = true; btn.classList.add('loading'); btnText.textContent = 'MEMVERIFIKASI'; say('', '');
+      try {
+        var res = await fetch('/api/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ password: value, remember: $('remember').checked })
+        });
+        var data = await res.json().catch(function () { return {}; });
+        btn.classList.remove('loading');
+        if (res.ok && data.ok) {
+          btnText.textContent = 'AKSES DITERIMA'; say('✔ Akses diberikan. Membuka dashboard…', 'ok');
+          stopFx(); document.body.classList.add('success');
+          setTimeout(function () { location.replace('/'); }, reduce ? 100 : 650);
+          return;
+        }
+        btn.disabled = false; btnText.textContent = 'MASUK';
+        if (res.status === 429) { lock(Number(data.retryAfter) || 900); return; }
+        fail(data.message || 'Login gagal.');
+        if (res.status === 401) { pw.select(); if (typeof data.attemptsLeft === 'number' && data.attemptsLeft <= 3) say('Password salah. Sisa percobaan: ' + data.attemptsLeft, 'err'); }
+      } catch (err) {
+        btn.classList.remove('loading'); btn.disabled = false; btnText.textContent = 'MASUK'; fail('Tidak dapat terhubung ke server.');
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

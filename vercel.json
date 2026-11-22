@@ -1,0 +1,30 @@
+{
+  "functions": {
+    "api/app.mjs": {
+      "includeFiles": "private/**"
+    },
+    "api/telegram.mjs": {
+      "maxDuration": 30
+    },
+    "api/account-check.mjs": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "^/private(/.*)?$",
+      "status": 404
+    },
+    {
+      "src": "^/(index\\.html)?$",
+      "dest": "/api/app"
+    },
+    {
+      "src": "^/login/?$",
+      "dest": "/login.html"
+    },
+    {
+      "handle": "filesystem"
+    }
+  ]
+}
