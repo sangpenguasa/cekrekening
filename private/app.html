@@ -1549,7 +1549,7 @@
           outputDiv.innerHTML = `<span style="color: var(--accent);">Rekening tidak ditemukan / tidak valid.</span>`;
         } else if (accountName) {
           const tag = data.cached
-            ? `<div class="output-subtext cache-tag">⚡ Tersimpan di server (tanpa cek ulang) • <a class="recheck">Cek ulang</a></div>`
+            ? `<div class="output-subtext cache-tag">⚡sudah pernah di cek • <a class="recheck">Cek ulang</a></div>`
             : '';
           outputDiv.innerHTML = `
             <span style="color: var(--cyan);">${esc(accountName)}</span>
